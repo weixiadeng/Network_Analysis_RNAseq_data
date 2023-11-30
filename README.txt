@@ -13,7 +13,7 @@ Prospective topics:
    sepsis patients 
 3. Dimension reduction and visualization from gene expression profiles 
 4. Create a gene regulatory network using expression profile and human transcription factors (downloaded from
-    TFDB) 
+    AnimalTFDB3.0) 
    These are crucial for understanding the host response at the genetic level, including how the immune system 
    reacts to the infection, how various signaling pathways are activated or repressed, and how these changes 
    contribute to the pathology of sepsis.
