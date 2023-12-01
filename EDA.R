@@ -8,8 +8,8 @@ filePath <- paste("./Data/", fileList, sep = "")
 dat.soft <- getGEO(filename = filePath[1])
 dat.annot <- getGEO(filename = filePath[2])
 # Save to data frame
-df.soft <- dat.soft@dataTable@table
-df.annot <- dat.annot@dataTable@table
+df.soft <- Table(dat.soft)
+df.annot <- Table(dat.annot)
 df.txt <- read.table(filePath[3], sep = "\t",
                       header = TRUE, fill = TRUE)
 
