@@ -1,10 +1,15 @@
 library(tidyverse)
+library(GEOquery)
 
+# Access file path
 fileList <- list.files("./Data/")
 filePath <- paste("./Data/", fileList, sep = "")
-filePath[1]
+# Reading the NCBI's GEO microarray SOFT files 
+dat.soft <- getGEO(filename = filePath[1])
+dat.annot <- getGEO(filename = filePath[2])
+# Save to data frame
+df.soft <- dat.soft@dataTable@table
+df.annot <- dat.annot@dataTable@table
+df.txt <- read.table(filePath[3], sep = "\t",
+                      header = TRUE, fill = TRUE)
 
-df.soft <- readLines(filePath[1])
-df.soft <- gsub("!", "#", df.soft)
-df.soft <- gsub("^", "#", df.soft)
-df.soft <- read.table(df.soft, comment.char = "#", header = TRUE, sep = "\t")
