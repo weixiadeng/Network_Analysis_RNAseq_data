@@ -10,6 +10,7 @@ dat.annot <- getGEO(filename = filePath[2])
 # Save to data frame
 df.soft <- Table(dat.soft)
 df.annot <- Table(dat.annot)
-df.txt <- read.table(filePath[3], sep = "\t",
-                      header = TRUE, fill = TRUE)
+df.txt <- read.table(filePath[3], sep = "\t", header = TRUE, fill = TRUE)
+
+disease.state <- dat.soft@dataTable@columns$disease.state
 
