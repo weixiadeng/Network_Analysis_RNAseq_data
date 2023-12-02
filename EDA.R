@@ -2,6 +2,7 @@ library(tidyverse)
 library(GEOquery)
 library(factoextra)
 library(FactoMineR)
+library(missMDA)
 
 # Access file path
 fileList <- list.files("./Data/")
@@ -15,4 +16,18 @@ df.annot <- Table(dat.annot)
 df.txt <- read.table(filePath[3], sep = "\t", header = TRUE, fill = TRUE)
 # Analysis of "GDS2808.soft"
 disease.state <- dat.soft@dataTable@columns$disease.state
-soft.pca <- PCA(df.soft[,2:ncol(df.soft)], graph = FALSE)
+soft.pca.df <- df.soft[,3:ncol(df.soft)] %>% t()
+colnames(soft.pca.df) <- df.soft$ID_REF
+# Estimate dimensionality
+pcaDim <- estim_ncpPCA(soft.pca.df)
+# pcaDim$ncp = 5
+res.comp <- imputePCA(soft.pca.df, ncp = 5)
+res.pca <- PCA(res.comp$completeObs, graph = FALSE)
+fviz_screeplot(res.pca, addlabels = TRUE, ylim = c(0, 15))
+
+fviz_pca_ind(res.pca,
+             label = "none",
+             habillage = disease.state,
+             palette = c("red", "blue"),
+             addEllipses = TRUE)
+
