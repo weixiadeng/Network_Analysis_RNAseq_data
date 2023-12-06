@@ -1,5 +1,6 @@
 library(tidyverse)
 library(GEOquery)
+library(GENIE3)
 library(factoextra)
 library(FactoMineR)
 library(missMDA)
@@ -21,13 +22,39 @@ colnames(soft.pca.df) <- df.soft$ID_REF
 # Estimate dimensionality
 pcaDim <- estim_ncpPCA(soft.pca.df)
 # pcaDim$ncp = 5
+# PAC
 res.comp <- imputePCA(soft.pca.df, ncp = 5)
 res.pca <- PCA(res.comp$completeObs, graph = FALSE)
 fviz_screeplot(res.pca, addlabels = TRUE, ylim = c(0, 15))
-
 fviz_pca_ind(res.pca,
              label = "none",
              habillage = disease.state,
              palette = c("red", "blue"),
              addEllipses = TRUE)
+
+# GENIE3
+soft.genie.mat <- df.soft[,3:ncol(df.soft)] %>% data.matrix()
+rownames(soft.genie.mat) <- df.soft$ID_REF
+
+idx <- c(); nsamp <- ncol(soft.genie.mat)
+for (i in 1:nrow(soft.genie.mat)){
+  idx[i] <- (is.na(soft.genie.mat[i,]) %>% sum()) / nsamp
+}
+# Missing value imputation for gene expression data
+# https://doi.org/10.1093/bib/bbq080
+# https://doi.org/10.1186/s12859-015-0494-3
+
+
+exprMatr <- soft.genie.mat[(idx < 0.5),]
+weightMat <- GENIE3(exprMatr)
+linkList <- getLinkList(weightMat)
+
+
+
+
+
+
+
+
+
 
