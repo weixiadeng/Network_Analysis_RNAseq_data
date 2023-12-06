@@ -4,6 +4,7 @@ library(GENIE3)
 library(factoextra)
 library(FactoMineR)
 library(missMDA)
+library(impute)
 
 # Access file path
 fileList <- list.files("./Data/")
@@ -43,11 +44,18 @@ for (i in 1:nrow(soft.genie.mat)){
 # Missing value imputation for gene expression data
 # https://doi.org/10.1093/bib/bbq080
 # https://doi.org/10.1186/s12859-015-0494-3
-
-
-exprMatr <- soft.genie.mat[(idx < 0.5),]
-weightMat <- GENIE3(exprMatr)
-linkList <- getLinkList(weightMat)
+exprMatr.raw <- soft.genie.mat[(idx < 0.5),]
+# one patient from the sepsis group with > 80% missing data was removed
+idx.col <- c(); ngene <- nrow(soft.genie.mat)
+for (i in 1:ncol(soft.genie.mat)){
+  idx.col[i] <- (is.na(soft.genie.mat[,i]) %>% sum()) / ngene
+}
+exprMatr.raw <- exprMatr.raw[,!(idx.col > 0.8)]
+# An expression matrix with genes in the rows, samples in the columns
+exprMatr <- impute.knn(exprMatr.raw, k = 10)
+weightMat <- GENIE3(exprMatr$data)
+# saveRDS(weightMat, file = "soft_weightMat.rds")
+linkList <- getLinkList(readRDS("soft_weightMat.rds"))
 
 
 
