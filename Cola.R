@@ -24,4 +24,5 @@ mat <- cbind(mat.ctrl$data, mat.seps$data)
 # Cola
 mat <- adjust_matrix(mat)
 res_list <- run_all_consensus_partition_methods(mat, mc.cores = 4, anno = anno)
-cola_report(res_list, "Cola_report.html")
+# saveRDS(res_list, "Cola_res_list.rds")
+cola_report(res_list, "Cola_report", mc.cores = 4)
