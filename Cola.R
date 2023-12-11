@@ -1,12 +1,14 @@
 library(tidyverse)
 library(GEOquery)
 library(cola)
+library(impute)
 
 gds <- getGEO(filename = "./Data/GDS2808.soft")
 eset <- GDS2eSet(gds)
 mat <- exprs(eset)
 anno <- gds@dataTable@columns
-
+# Access sample disease state (control vs ill)
+disease.state <- gds@dataTable@columns$disease.state
 # one patient from the sepsis group with > 80% missing data was removed
 idx.col <- c(); ngene <- nrow(mat)
 for (i in 1:ncol(mat)){
@@ -14,7 +16,12 @@ for (i in 1:ncol(mat)){
 }
 mat <- mat[,!(idx.col > 0.8)]
 anno <- anno[!(idx.col > 0.8),]
-
+disease.state <- disease.state[!(idx.col > 0.8)]
+# KNN impute two groups
+mat.ctrl <- mat[,disease.state == "control"] %>% impute.knn()
+mat.seps <- mat[,disease.state == "sepsis"] %>% impute.knn()
+mat <- cbind(mat.ctrl$data, mat.seps$data)
+# Cola
 mat <- adjust_matrix(mat)
 res_list <- run_all_consensus_partition_methods(mat, mc.cores = 4, anno = anno)
 cola_report(res_list, "Cola_report.html")
