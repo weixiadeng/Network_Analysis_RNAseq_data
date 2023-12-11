@@ -1,0 +1,21 @@
+---
+title: "Dimension Reduction"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, message=FALSE}
+library(cola)
+res_list <- readRDS("Cola_res_list.rds")
+res <- res_list["SD:hclust"]
+select_partition_number(res)
+# PCA
+dimension_reduction(res, k = 2, method = "PCA")
+# UMAP
+dimension_reduction(res, k = 2, method = "UMAP")
+# t-SNE
+dimension_reduction(res, k = 2, method = "t-SNE")
+```

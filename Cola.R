@@ -25,4 +25,12 @@ mat <- cbind(mat.ctrl$data, mat.seps$data)
 mat <- adjust_matrix(mat)
 res_list <- run_all_consensus_partition_methods(mat, mc.cores = 4, anno = anno)
 # saveRDS(res_list, "Cola_res_list.rds")
-cola_report(res_list, "Cola_report", mc.cores = 4)
+# cola_report(res_list, "Cola_report", mc.cores = 4)
+res <- res_list["SD:hclust"]
+select_partition_number(res)
+dimension_reduction(res, k = 2, method = "UMAP")
+dimension_reduction(res, k = 2, method = "PCA")
+dimension_reduction(res, k = 2, method = "t-SNE")
+
+
+
