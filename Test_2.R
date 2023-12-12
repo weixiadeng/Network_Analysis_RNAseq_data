@@ -96,4 +96,3 @@ ump <- umap(t(dat), n_neighbors = 15, random_state = 123)
 plot(ump$layout, main="UMAP plot, nbrs=15", xlab="", ylab="", col=gs, pch=20, cex=1.5)
 legend("topright", inset=c(-0.15,0), legend=groups, pch=20,
        col=1:length(groups), title="Group", pt.cex=1.5)
-
