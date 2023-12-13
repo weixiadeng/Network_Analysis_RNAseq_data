@@ -1,7 +1,6 @@
 library(tidyverse)
 library(GEOquery)
 library(cola)
-library(impute)
 
 gds <- getGEO(filename = "./Data/GDS2808.soft")
 eset <- GDS2eSet(gds)
@@ -18,11 +17,22 @@ mat <- mat[,!(idx.col > 0.8)]
 anno <- anno[!(idx.col > 0.8),]
 disease.state <- disease.state[!(idx.col > 0.8)]
 # Cola
-mat <- adjust_matrix(mat)
-res_list <- run_all_consensus_partition_methods(mat, mc.cores = 4, anno = anno)
+mat <- adjust_matrix(mat, max_na = 0.5)
+res_list <- run_all_consensus_partition_methods(mat, mc.cores = 4,
+                                                anno = anno, verbose = FALSE)
+# saveRDS(res_list, "GDS2808_Cola_res_list.rds")
 # Plot
 res <- res_list["SD:hclust"]
 select_partition_number(res)
-dimension_reduction(res, k = 2, method = "UMAP")
-dimension_reduction(res, k = 2, method = "PCA")
-dimension_reduction(res, k = 2, method = "t-SNE")
+dimension_reduction(res, k = 2, method = "UMAP",
+                    control = list(col = disease.state))
+dimension_reduction(res, k = 2, method = "PCA",
+                    control = list(scale = TRUE))
+dimension_reduction(res, k = 2, method = "t-SNE",
+                    control = list(bg = disease.state))
+
+
+
+
+
+
