@@ -22,6 +22,7 @@ res_list <- run_all_consensus_partition_methods(mat, mc.cores = 4,
                                                 anno = anno, verbose = FALSE)
 # saveRDS(res_list, "GDS2808_Cola_res_list.rds")
 # Plot
+res_list <- readRDS("GDS2808_Cola_res_list.rds")
 res <- res_list["SD:hclust"]
 select_partition_number(res)
 dimension_reduction(res, k = 2, method = "UMAP",
@@ -30,9 +31,4 @@ dimension_reduction(res, k = 2, method = "PCA",
                     control = list(scale = TRUE))
 dimension_reduction(res, k = 2, method = "t-SNE",
                     control = list(bg = disease.state))
-
-
-
-
-
 
